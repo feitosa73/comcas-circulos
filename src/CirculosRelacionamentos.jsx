@@ -9,16 +9,12 @@ function Pessoa({ id, text, position, onChangeName }) {
     position: "absolute",
     left: (transform ? position.x + transform.x : position.x) + "px",
     top: (transform ? position.y + transform.y : position.y) + "px",
-    width: 100,
     backgroundColor: "#4F46E5",
     color: "white",
-    borderRadius: 8,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    borderRadius: "8px",
     cursor: "grab",
+    padding: "4px",
     userSelect: "none",
-    padding: "5px",
   };
 
   return (
@@ -27,16 +23,7 @@ function Pessoa({ id, text, position, onChangeName }) {
         type="text"
         value={text}
         onChange={(e) => onChangeName(id, e.target.value)}
-        style={{
-          backgroundColor: "transparent",
-          color: "white",
-          border: "none",
-          outline: "none",
-          textAlign: "center",
-          width: "80px",
-          userSelect: "text",
-          cursor: "text"
-        }}
+        style={{ background: "transparent", color: "white", border: "none", outline: "none", width: "80px", textAlign: "center" }}
       />
     </div>
   );
@@ -44,81 +31,53 @@ function Pessoa({ id, text, position, onChangeName }) {
 
 export default function CirculosRelacionamentos() {
   const [pessoas, setPessoas] = useState([
-    { id: "pessoa-1", text: "Rose", position: { x: 250, y: 250 } },
-    { id: "pessoa-2", text: "Daniel", position: { x: 300, y: 300 } },
+    { id: "pessoa-1", text: "Daniel", position: { x: 250, y: 250 } },
   ]);
 
   const handleDragEnd = (event) => {
     const { active, delta } = event;
     setPessoas((prev) =>
       prev.map((p) =>
-        p.id === active.id
-          ? {
-              ...p,
-              position: {
-                x: Math.min(Math.max(p.position.x + delta.x, 0), 520),
-                y: Math.min(Math.max(p.position.y + delta.y, 0), 520),
-              },
-            }
-          : p
+        p.id === active.id ? { ...p, position: { x: p.position.x + delta.x, y: p.position.y + delta.y } } : p
       )
     );
   };
 
   const adicionarPessoa = () => {
-    const nova = {
-      id: `pessoa-${pessoas.length + 1}`,
-      text: "Nome",
-      position: { x: 280, y: 280 },
-    };
+    const nova = { id: `pessoa-${pessoas.length + 1}`, text: "Nome", position: { x: 250, y: 250 } };
     setPessoas([...pessoas, nova]);
   };
 
+  const handlePrint = () => window.print();
+
   const handleChangeName = (id, newName) => {
-    setPessoas((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, text: newName } : p))
-    );
+    setPessoas((prev) => prev.map((p) => (p.id === id ? { ...p, text: newName } : p)));
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4">Círculo de Relacionamentos</h1>
-
-      <button
-        onClick={adicionarPessoa}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        + Adicionar Pessoa
-      </button>
+    <div style={{ textAlign: "center", padding: "2rem" }}>
+      <h1>Círculo de Relacionamentos</h1>
+      <button onClick={adicionarPessoa}>+ Adicionar Pessoa</button>
+      <button onClick={handlePrint} style={{ marginLeft: "20px" }}>Imprimir</button>
 
       <DndContext onDragEnd={handleDragEnd}>
-        <div className="relative w-[600px] h-[600px] border rounded-full bg-gray-100">
-          <svg viewBox="-300 -300 600 600" className="absolute">
-            <circle r="100" stroke="black" strokeWidth="2" fill="red" fillOpacity="0.2" />
-            <circle r="200" stroke="black" strokeWidth="2" fill="orange" fillOpacity="0.2" />
-            <circle r="300" stroke="black" strokeWidth="2" fill="yellow" fillOpacity="0.2" />
-
-            <line x1="-300" y1="0" x2="300" y2="0" stroke="black" strokeWidth="2" />
-            <line x1="0" y1="-300" x2="0" y2="300" stroke="black" strokeWidth="2" />
-
-            <text x="-250" y="-250" textAnchor="middle" fontSize="16">Amizades</text>
-            <text x="250" y="-250" textAnchor="middle" fontSize="16">Família</text>
-            <text x="-250" y="250" textAnchor="middle" fontSize="14">Comunitárias</text>
-            <text x="250" y="250" textAnchor="middle" fontSize="14">Trabalho</text>
-
-            <text x="0" y="10" textAnchor="middle" fontSize="16" fontWeight="bold">Íntimos</text>
-            <text x="0" y="-120" textAnchor="middle" fontSize="14">Intermediários</text>
-            <text x="0" y="-220" textAnchor="middle" fontSize="14">Ocasional</text>
+        <div style={{ position: "relative", width: "700px", height: "700px", margin: "2rem auto", backgroundColor: "white" }}>
+          <svg viewBox="-350 -350 700 700" style={{ position: "absolute" }}>
+            <circle r="100" stroke="black" strokeWidth="2" fill="orange" fillOpacity="0.3" />
+            <circle r="200" stroke="black" strokeWidth="2" fill="gold" fillOpacity="0.3" />
+            <circle r="300" stroke="black" strokeWidth="2" fill="khaki" fillOpacity="0.3" />
+            <line x1="-350" y1="0" x2="350" y2="0" stroke="black" strokeWidth="2" />
+            <line x1="0" y1="-350" x2="0" y2="350" stroke="black" strokeWidth="2" />
+            <text x="-280" y="-280">Amizades</text>
+            <text x="280" y="-280">Família</text>
+            <text x="-280" y="300">Comunitárias</text>
+            <text x="280" y="300">Trabalho</text>
+            <text x="0" y="0" fontWeight="bold">Íntimos</text>
+            <text x="0" y="-120">Intermediários</text>
+            <text x="0" y="-220">Ocasional</text>
           </svg>
-
           {pessoas.map((p) => (
-            <Pessoa
-              key={p.id}
-              id={p.id}
-              text={p.text}
-              position={p.position}
-              onChangeName={handleChangeName}
-            />
+            <Pessoa key={p.id} id={p.id} text={p.text} position={p.position} onChangeName={handleChangeName} />
           ))}
         </div>
       </DndContext>
